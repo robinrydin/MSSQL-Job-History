@@ -67,8 +67,12 @@ parser.add_argument("-l", "--list", action="store_true", help="This will list al
 parser.add_argument("-v", "--verbose", action="store_true", help="This shows the Transaction SQL code that will be executed to help debug", dest="verbose")
 results = parser.parse_args()
 
+connect_host = results.host
+if port != 1433:
+    connect_host += ":%s" % (str(results.port))
+
 try:
-    conn = pymssql.connect(user = results.user, password = results.password, host = ':'.join([results.host, results.port]), timeout = results.query_timeout, login_timeout = results.timeout)
+    conn = pymssql.connect(user = results.user, password = results.password, host = connect_host, timeout = results.query_timeout, login_timeout = results.timeout)
 except:
     nagios_exit(3, "Unable to connect to SQL Server")
 
