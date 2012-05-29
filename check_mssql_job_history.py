@@ -9,6 +9,7 @@
 # as allowing you to specify a single job to check which will return
 # OK|CRITICAL for that job alone.
 
+import sys
 import argparse
 import pymssql
 
@@ -34,7 +35,7 @@ def nagios_exit(exit_type, msg):
         status = "UNKNOWN"
 
     print "%s - %s" % (status, msg)
-    exit(exit_code)
+    sys.exit(exit_code)
 
     
 def run_datetime(run_date, run_time):
@@ -91,7 +92,7 @@ if results.list_jobs:
             print "  %s" % (row[0])
         else:
             print "- %s" % (row[0])
-    exit()
+    sys.exit()
 
 tsql_cmd = """SELECT [j].[name], [h].[run_date], [h].[run_time]
 FROM [msdb]..[sysjobs] [j]
@@ -134,6 +135,8 @@ else:
 
     if rowcount >= results.warning and rowcount < results.critical:
         nagios_exit(1, failed_stats)
+    elif rowcount < results.warning:
+        nagios_exit(0, "%d failed jobs is below the warning count specified." % (rowcount))
     elif rowcount >= results.critical:
         nagios_exit(2, failed_stats)
     else:
