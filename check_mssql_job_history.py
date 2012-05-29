@@ -68,7 +68,7 @@ parser.add_argument("-v", "--verbose", action="store_true", help="This shows the
 results = parser.parse_args()
 
 connect_host = results.host
-if port != 1433:
+if results.port != 1433:
     connect_host += ":%s" % (str(results.port))
 
 try:
