@@ -34,6 +34,8 @@ def nagios_exit(exit_type, msg):
     else:
         status = "UNKNOWN"
 
+    msg = msg.encode("utf-8")
+        
     print "%s - %s" % (status, msg)
     sys.exit(exit_code)
 
